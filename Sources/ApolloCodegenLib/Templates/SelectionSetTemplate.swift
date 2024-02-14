@@ -168,6 +168,8 @@ struct SelectionSetTemplate {
   }
 
   private func MergedSourcesTemplate(_ selectionSet: IR.SelectionSet) -> TemplateString {
+    var selectionSetNameCache = [String]()
+
     return """
     public static var __mergedSources: [any \(config.ApolloAPITargetName).SelectionSet.Type] { [
       \(selectionSet.selections.merged.mergedSources.map {
@@ -176,6 +178,12 @@ struct SelectionSetTemplate {
           format: .fullyQualified,
           pluralizer: config.pluralizer
         )
+        if selectionSetNameCache.contains(selectionSetName) {
+          print("\(selectionSet.selections.merged.mergedSources.count) mergedSources for \(definition)\nSources: \(selectionSet.selections.merged.mergedSources.debugDescription)\nDuplicating generated selection set name \(selectionSetName)")
+        } else {
+          selectionSetNameCache.append(selectionSetName)
+        }
+
         return "\(selectionSetName).self"
       })
     ] }
