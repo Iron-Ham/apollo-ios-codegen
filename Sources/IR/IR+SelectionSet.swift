@@ -65,7 +65,7 @@ public class SelectionSet: Hashable, CustomDebugStringConvertible {
     }
 
     public var debugDescription: String {
-      scopePath.debugDescription
+      "| TYPE_INFO  \(scopePath.debugDescription) \(entity) isUserDefined: \(isUserDefined) |"
     }
   }
 
