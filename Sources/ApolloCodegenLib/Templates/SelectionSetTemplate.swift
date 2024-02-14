@@ -179,7 +179,10 @@ struct SelectionSetTemplate {
           pluralizer: config.pluralizer
         )
         if selectionSetNameCache.contains(selectionSetName) {
-          print("\(selectionSet.selections.merged.mergedSources.count) mergedSources for \(definition)\nSources: \(selectionSet.selections.merged.mergedSources.debugDescription)\nDuplicating generated selection set name \(selectionSetName)")
+          CodegenLogger.log(
+            "\(selectionSet.selections.merged.mergedSources.count) mergedSources for \(definition)\nSources: \(selectionSet.selections.merged.mergedSources.debugDescription)\nDuplicating generated selection set name \(selectionSetName)",
+            logLevel: .error
+          )
         } else {
           selectionSetNameCache.append(selectionSetName)
         }
