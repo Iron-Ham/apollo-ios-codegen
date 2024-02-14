@@ -55,7 +55,10 @@ public class SelectionSet: Hashable, CustomDebugStringConvertible {
     }
 
     public var debugDescription: String {
-      scopePath.debugDescription
+      return """
+      entity: \(entity),
+      scopePath: \(scopePath.debugDescription)
+      """
     }
   }
 

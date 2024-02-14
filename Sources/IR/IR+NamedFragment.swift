@@ -47,6 +47,9 @@ public class NamedFragment: Hashable, CustomDebugStringConvertible {
   }
 
   public var debugDescription: String {
-    definition.debugDescription
+    return """
+    rootField: \(rootField.debugDescription),
+    definition: \(definition.debugDescription)
+    """
   }
 }
