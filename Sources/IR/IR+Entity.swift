@@ -5,11 +5,11 @@ import Utilities
 ///
 /// Multiple `SelectionSet`s may select fields on the same `Entity`. All `SelectionSet`s that will
 /// be selected on the same object share the same `Entity`.
-public class Entity {
+public class Entity: CustomDebugStringConvertible {
 
   /// Represents the location within a GraphQL definition (operation or fragment) of an `Entity`.
-  public struct Location: Hashable {
-    public enum SourceDefinition: Hashable {
+  public struct Location: Hashable, CustomDebugStringConvertible {
+    public enum SourceDefinition: Hashable, CustomDebugStringConvertible {
       case operation(CompilationResult.OperationDefinition)
       case namedFragment(CompilationResult.FragmentDefinition)
 
@@ -19,15 +19,28 @@ public class Entity {
         case let .namedFragment(definition): return definition.type
         }
       }
+
+      public var debugDescription: String {
+        switch self {
+        case .namedFragment(let fragment):
+          return "Fragment: \(fragment) | RootType: \(rootType)"
+        case .operation(let operation):
+          return "Operation: \(operation) | RootType: \(rootType)"
+        }
+      }
     }
 
-    public struct FieldComponent: Hashable {
+    public struct FieldComponent: Hashable, CustomDebugStringConvertible {
       public let name: String
       public let type: GraphQLType
 
       public init(name: String, type: GraphQLType) {
         self.name = name
         self.type = type
+      }
+
+      public var debugDescription: String {
+        "\(name) \(type)"
       }
     }
 
@@ -67,6 +80,10 @@ public class Entity {
     static func +(lhs: Entity.Location, rhs: FieldComponent) -> Location {
       lhs.appending(rhs)
     }
+
+    public var debugDescription: String {
+      "Source: \(source) FieldPath: \(String(describing: fieldPath)) "
+    }
   }
 
   /// The selections that are selected for the entity across all type scopes in the operation.
@@ -92,5 +109,9 @@ public class Entity {
   ) {
     self.location = location
     self.selectionTree = EntitySelectionTree(rootTypePath: rootTypePath)
+  }
+
+  public var debugDescription: String {
+    "SelectionTree: \(selectionTree)\nLocation: \(location)"
   }
 }
