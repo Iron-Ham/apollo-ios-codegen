@@ -5,11 +5,11 @@ import Utilities
 ///
 /// Multiple `SelectionSet`s may select fields on the same `Entity`. All `SelectionSet`s that will
 /// be selected on the same object share the same `Entity`.
-public class Entity {
+public class Entity: CustomDebugStringConvertible {
 
   /// Represents the location within a GraphQL definition (operation or fragment) of an `Entity`.
-  public struct Location: Hashable {
-    public enum SourceDefinition: Hashable {
+  public struct Location: Hashable, CustomDebugStringConvertible {
+    public enum SourceDefinition: Hashable, CustomDebugStringConvertible {
       case operation(CompilationResult.OperationDefinition)
       case namedFragment(CompilationResult.FragmentDefinition)
 
@@ -19,15 +19,37 @@ public class Entity {
         case let .namedFragment(definition): return definition.type
         }
       }
+
+      public var debugDescription: String {
+        let type: String
+        switch self {
+        case .operation(let definition):
+          type = "Operation"
+        case .namedFragment(let definition):
+          type = "NamedFragment"
+        }
+        return """
+        Source Definition:
+          Root Type: \(type) - \(rootType.debugDescription)
+        """
+      }
     }
 
-    public struct FieldComponent: Hashable {
+    public struct FieldComponent: Hashable, CustomDebugStringConvertible {
       public let name: String
       public let type: GraphQLType
 
       public init(name: String, type: GraphQLType) {
         self.name = name
         self.type = type
+      }
+
+      public var debugDescription: String {
+        """
+        FieldComponent:
+          Name: \(name)
+          Type: \(type.debugDescription)
+        """
       }
     }
 
@@ -67,6 +89,14 @@ public class Entity {
     static func +(lhs: Entity.Location, rhs: FieldComponent) -> Location {
       lhs.appending(rhs)
     }
+
+    public var debugDescription: String {
+      """
+        Location:
+          source: \(source.debugDescription)
+          fieldPath: \(fieldPath?.debugDescription ?? "")
+      """
+    }
   }
 
   /// The selections that are selected for the entity across all type scopes in the operation.
@@ -92,5 +122,13 @@ public class Entity {
   ) {
     self.location = location
     self.selectionTree = EntitySelectionTree(rootTypePath: rootTypePath)
+  }
+
+  public var debugDescription: String {
+    """
+    Entity:
+      SelectionTree: \(String(describing: selectionTree))
+      Location: \(location.debugDescription)
+    """
   }
 }
