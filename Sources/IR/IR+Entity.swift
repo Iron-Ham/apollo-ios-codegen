@@ -127,7 +127,7 @@ public class Entity: CustomDebugStringConvertible {
   public var debugDescription: String {
     """
     Entity:
-      SelectionTree: \(String(describing: selectionTree))
+      SelectionTree: (not generated)
       Location: \(location.debugDescription)
     """
   }
