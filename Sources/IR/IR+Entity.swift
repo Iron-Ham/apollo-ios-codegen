@@ -125,10 +125,6 @@ public class Entity: CustomDebugStringConvertible {
   }
 
   public var debugDescription: String {
-    """
-    Entity:
-      SelectionTree: (not generated)
-      Location: \(location.debugDescription)
-    """
+    selectionTree.debugDescription
   }
 }
